@@ -20,6 +20,10 @@ class LifecycleOwnerStub() : LifecycleOwner {
 @ExtendWith(InstantTaskExecutorExtension::class)
 class LiveEventTest {
     private val lifecycle = LifecycleOwnerStub()
+    @BeforeEach
+    fun initLifecycle()    {
+        lifecycle.setCurrentState(Lifecycle.State.RESUMED)
+    }
 
 
     @Test
@@ -42,10 +46,6 @@ class LiveEventTest {
         })
         event.sendEvent(1)
         assertEquals(1, count)
-    }
-    @BeforeEach
-    fun initLifecycle()    {
-        lifecycle.setCurrentState(Lifecycle.State.RESUMED)
     }
     @Test
     fun `event passed to only one consumer`(){

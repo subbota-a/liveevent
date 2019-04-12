@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
-open class Event<out T>(private val content: T) {
+open class EventHolder<out T>(private val content: T) {
 
     var hasBeenHandled = false
         private set // Allow external read but not write
@@ -27,20 +27,20 @@ open class Event<out T>(private val content: T) {
     fun peekContent(): T = content
 }
 
-abstract class Consumer<T> : Observer<Event<T>>{
-    override fun onChanged(t: Event<T>?) {
+abstract class Consumer<T> : Observer<EventHolder<T>>{
+    override fun onChanged(t: EventHolder<T>?) {
         t?.getContentIfNotHandled()?.let{ onArrived(it) }
     }
     abstract fun onArrived(event: T)
 }
 
 open class LiveEvent<T>{
-    val mData = MutableLiveData<Event<T>>()
+    val mData = MutableLiveData<EventHolder<T>>()
     fun sendEvent(value : T){
-        mData.setValue(Event(value))
+        mData.setValue(EventHolder(value))
     }
     fun postEvent(value: T){
-        mData.postValue(Event(value))
+        mData.postValue(EventHolder(value))
     }
 
     fun observe(owner: LifecycleOwner, consumer: Consumer<in T>) {
